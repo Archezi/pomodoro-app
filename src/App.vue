@@ -1,9 +1,7 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class="w-full h-screen bg-main-default">
+    <router-view />
   </div>
-  <router-view/>
 </template>
 
 <style>
