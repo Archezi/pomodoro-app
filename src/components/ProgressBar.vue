@@ -58,28 +58,14 @@ export default {
       return;
     },
     pomodoro: function() {
-      console.log("pomodoro changed");
-
       this.animationObject.animationDuration = this.mainTimer;
       this.aniTime();
-      console.log(this.animationObject.animationDuration);
     },
-    shortBreak: function() {
-      console.log("shortBreak changed");
-    },
-    longBreak: function() {
-      console.log("longBreak changed");
-    },
+    shortBreak: function() {},
+    longBreak: function() {},
   },
   mounted() {
     this.aniTime();
-    // console.log(
-    //   this.pomodoro,
-    //   this.shortBreak,
-    //   this.longBreak,
-    //   this.animationTime
-    // );
-    // console.log(this.animationObject.animationDuration);
   },
 };
 </script>

@@ -139,8 +139,8 @@ export default {
       pause: false,
       pomodoroCount: 1,
       pomodoroTimers: {
-        pomodoro: 5,
-        shortBreak: 6,
+        pomodoro: 1,
+        shortBreak: 2,
         longBreak: 7,
       },
       infoPanelClass: {
@@ -178,7 +178,11 @@ export default {
     },
     start() {
       this.pause = false;
-      this.pomodoro = true;
+      if (this.shortBreak || this.longBreak) {
+        this.pomodoro = false;
+      } else {
+        this.pomodoro = true;
+      }
       this.timerRunning = !this.taimerRunning;
 
       if (this.timerRunning)
@@ -191,28 +195,33 @@ export default {
       clearInterval(this.timeInterval);
       this.mainTimer = this.pomodoroTimers.pomodoro;
     },
-    pomodoroCheck() {
-      !this.shortBreak && !this.longBreak ? this.pomodoro : !this.pomodoro;
-    },
-    shortBreakCheck() {
-      !this.pomodoro && !this.longBreak ? this.shortBreak : !this.shortBreak;
-    },
+    // pomodoroCheck() {
+    //   !this.shortBreak && !this.longBreak ? this.pomodoro : !this.pomodoro;
+    // },
+    // shortBreakCheck() {
+    //   !this.pomodoro && !this.longBreak ? this.shortBreak : !this.shortBreak;
+    // },
     longBreakCheck() {
-      if (this.pomodoroCount % 4 === 0) {
+      if (this.pomodoroCount === 4) {
         this.longBreak = true;
+        this.shortBreak = false;
       } else {
         this.longBreak = false;
       }
     },
     updateTimer() {
       if (this.pomodoro) {
-        this.mainTimer = this.pomodoroTimers.pomodoro;
+        if (this.pomodoroCount === 4) {
+          this.mainTimer = this.pomodoroTimers.longBreak;
+        } else {
+          this.mainTimer = this.pomodoroTimers.shortBreak;
+        }
         this.pomodoro = !this.pomodoro;
       } else if (this.shortBreak) {
-        this.mainTimer = this.pomodoroTimers.shortBreak;
+        this.mainTimer = this.pomodoroTimers.pomodoro;
         this.shortBreak = !this.shortBreak;
       } else if (this.longBreak) {
-        this.mainTimer = this.pomodoroTimers.longBreak;
+        this.mainTimer = this.pomodoroTimers.pomodoro;
         this.longBreak = !this.longBreak;
       }
     },
@@ -229,17 +238,20 @@ export default {
 
       if (vm.mainTimer === 0 && this.longBreak === true) {
         vm.updateTimer();
+        this.pomodoro = !this.pomodoro;
         this.pomodoroCount = 1;
-        this.pomodoro = true;
-        return;
-      } else if (vm.mainTimer === 0 && this.shortBreak) {
+      } else if (vm.mainTimer === 0 && this.shortBreak === true) {
         vm.updateTimer();
         vm.updatePomodoroCounter();
-        this.pomodoro = true;
-        return;
+        this.pomodoro = !this.pomodoro;
       } else if (vm.mainTimer === 0 && this.pomodoro === true) {
-        vm.updateTimer();
-        vm.longBreakCheck();
+        if (this.pomodoroCount === 4) {
+          vm.updateTimer();
+          this.longBreak = !this.longBreak;
+        } else {
+          vm.updateTimer();
+          this.shortBreak = true;
+        }
       }
 
       // if (
@@ -278,11 +290,6 @@ export default {
   mounted() {
     this.mainTimer = this.pomodoroTimers.pomodoro;
     console.log(`Pomodoro App is Running`);
-    console.log(
-      this.pomodoroCheck(),
-      this.shortBreakCheck(),
-      this.longBreakCheck()
-    );
   },
 };
 </script>
