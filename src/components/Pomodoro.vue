@@ -47,17 +47,21 @@
     </section>
     <section class="timer mx-w-full grid   content-center justify-center    ">
       <div
-        class="timer-container relative cursor-pointer  content-center justify-center rounded-full w-72 h-72 bg-orange-default  w "
+        class="timer-container relative cursor-pointer  content-center justify-center rounded-full w-72 h-72  "
       >
+        <div
+          class="hover-element  rounded-full w-full h-full z-99 bg-none"
+        ></div>
         <!--start -->
         <div
           @click="start"
           v-if="!timerRunning"
           class="circle-1
-          hover:bg-orange-darker
+          
           transition duration-500 ease-in-out 
           w-full h-full
-          z-99
+          z-50
+          bg-none
           absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
           border-8  border-font-dark rounded-full"
         >
@@ -74,7 +78,7 @@
           w-full h-full
           hover:bg-orange-darker
           transition duration-500 ease-in-out 
-          z-99
+          z-50
           absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
           border-8  border-font-dark rounded-full"
         >
@@ -85,13 +89,15 @@
         </div>
         <!--timer -->
         <div
-          class="circle-inner
+          class="circle-inner z-50
         absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-          <span class="text-6xl font-bold text-font-default"
+          <span class="text-6xl font-bold text-font-default z-55"
             >{{ displayMinutes }}:{{ displaySeconds }}</span
           >
         </div>
+        <!-- progres bar -->
+
         <button
           @click="reset"
           v-if="timerRunning"
@@ -111,7 +117,8 @@
         :short-break="this.shortBreak"
         :long-break="this.longBreak"
         :main-timer="this.mainTimer"
-        class="mx-auto"
+        :pause="this.pause"
+        class="mx-auto progressBar   z-0"
       />
     </section>
   </div>
@@ -124,18 +131,17 @@ export default {
   data() {
     return {
       mainTimer: null,
-      test: 20,
       timerRunning: false,
-      pomodoro: true,
+      pomodoro: null,
       shortBreak: false,
       longBreak: false,
       timeInterval: null,
-
-      pomodoroCount: [1],
+      pause: false,
+      pomodoroCount: 1,
       pomodoroTimers: {
         pomodoro: 5,
-        shortBreak: 2,
-        longBreak: 5,
+        shortBreak: 6,
+        longBreak: 7,
       },
       infoPanelClass: {
         activeClass: "bg-orange-default",
@@ -166,11 +172,13 @@ export default {
       return time.toString();
     },
     stop() {
+      this.pause = true;
       this.timerRunning = !this.timerRunning;
       clearInterval(this.timeInterval);
     },
     start() {
-      this.stop();
+      this.pause = false;
+      this.pomodoro = true;
       this.timerRunning = !this.taimerRunning;
 
       if (this.timerRunning)
@@ -185,23 +193,32 @@ export default {
     },
     pomodoroCheck() {
       !this.shortBreak && !this.longBreak ? this.pomodoro : !this.pomodoro;
-      console.log(`pomodoro check ${this.pomodoro}`);
     },
     shortBreakCheck() {
       !this.pomodoro && !this.longBreak ? this.shortBreak : !this.shortBreak;
-      console.log(`pomodoro check ${this.shortBreak}`);
     },
     longBreakCheck() {
-      if (
-        this.pomodoroCount.length > 0 &&
-        this.pomodoroCount.length % 4 === 0
-      ) {
+      if (this.pomodoroCount % 4 === 0) {
         this.longBreak = true;
-        this.pomodoro = false;
-        return;
       } else {
-        return (this.longBreak = false);
+        this.longBreak = false;
       }
+    },
+    updateTimer() {
+      if (this.pomodoro) {
+        this.mainTimer = this.pomodoroTimers.pomodoro;
+        this.pomodoro = !this.pomodoro;
+      } else if (this.shortBreak) {
+        this.mainTimer = this.pomodoroTimers.shortBreak;
+        this.shortBreak = !this.shortBreak;
+      } else if (this.longBreak) {
+        this.mainTimer = this.pomodoroTimers.longBreak;
+        this.longBreak = !this.longBreak;
+      }
+    },
+    updatePomodoroCounter() {
+      this.pomodoroCount += 1;
+      console.log(this.pomodoroCount);
     },
 
     timerSwitch() {},
@@ -209,47 +226,63 @@ export default {
   watch: {
     mainTimer: function() {
       let vm = this;
-      if (
-        vm.mainTimer === 0 &&
-        vm.pomodoro &&
-        !vm.shortBreak &&
-        !vm.longBreak
-      ) {
-        vm.mainTimer = vm.pomodoroTimers.shortBreak;
-        vm.shortBreak = !vm.shortBreak;
-        vm.pomodoro = !vm.pomodoro;
+
+      if (vm.mainTimer === 0 && this.longBreak === true) {
+        vm.updateTimer();
+        this.pomodoroCount = 1;
+        this.pomodoro = true;
+        return;
+      } else if (vm.mainTimer === 0 && this.shortBreak) {
+        vm.updateTimer();
+        vm.updatePomodoroCounter();
+        this.pomodoro = true;
+        return;
+      } else if (vm.mainTimer === 0 && this.pomodoro === true) {
+        vm.updateTimer();
         vm.longBreakCheck();
-        console.log(`break`);
-      } else if (
-        vm.mainTimer === 0 &&
-        vm.shortBreak &&
-        !vm.pomodoro &&
-        !vm.longBreak
-      ) {
-        vm.mainTimer = vm.pomodoroTimers.pomodoro;
-        vm.shortBreak = !vm.shortBreak;
-        vm.pomodoro = !vm.pomodoro;
-        vm.longBreak = !vm.longBreak;
-        vm.pomodoroCount.push(vm.pomodoroCount.length + 1);
-        console.log(`pomodoro - ${vm.pomodoroCount.lenght}`);
-        vm.longBreakCheck();
-      } else if (
-        vm.mainTimer === 0 &&
-        vm.pomodoro &&
-        !vm.shortBreak &&
-        vm.longBreak
-      ) {
-        vm.mainTimer = vm.pomodoroTimers.longBreak;
-        vm.pomodoro = true;
-        vm.shortBreak = !vm.shortBreak;
-        vm.longBreakCheck();
-        console.log(`long break`);
       }
+
+      // if (
+      //   vm.mainTimer === 0 &&
+      //   vm.pomodoro &&
+      //   !vm.shortBreak &&
+      //   !vm.longBreak
+      // ) {
+      //   // set new timer for short break
+      //   vm.mainTimer = vm.pomodoroTimers.shortBreak;
+      //   vm.shortBreak = !vm.shortBreak;
+      //   vm.pomodoro = !vm.pomodoro;
+      //   vm.updatePomodoroCounter();
+      // } else if (
+      //   vm.mainTimer === 0 &&
+      //   vm.shortBreak &&
+      //   !vm.pomodoro &&
+      //   !vm.longBreak
+      // ) {
+      //   vm.mainTimer = vm.pomodoroTimers.pomodoro;
+      //   vm.shortBreak = !vm.shortBreak;
+      //   vm.pomodoro = !vm.pomodoro;
+      // } else if (
+      //   vm.mainTimer === 0 &&
+      //   vm.pomodoro &&
+      //   !vm.shortBreak &&
+      //   vm.longBreakCheck()
+      // ) {
+      //   vm.mainTimer = vm.pomodoroTimers.longBreak;
+      //   vm.pomodoro = true;
+      //   vm.shortBreak = false;
+      //   vm.shortBreak = false;
+      // }
     },
   },
   mounted() {
     this.mainTimer = this.pomodoroTimers.pomodoro;
     console.log(`Pomodoro App is Running`);
+    console.log(
+      this.pomodoroCheck(),
+      this.shortBreakCheck(),
+      this.longBreakCheck()
+    );
   },
 };
 </script>
@@ -261,5 +294,9 @@ export default {
 
 .active {
   background: orange;
+}
+
+.timer-container:hover .circle-1 {
+  background-color: #c45957;
 }
 </style>

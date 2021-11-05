@@ -14,6 +14,12 @@
           stroke-dasharray="472"
           stroke-dashoffset="472"
           :style="this.animationObject"
+          :class="[
+            { animation: pomodoro },
+            { pauseAnimation: pause },
+            { animationShortBreak: shortBreak },
+            { animationLongBreak: longBreak },
+          ]"
         />
         <path />
       </g>
@@ -26,8 +32,7 @@ export default {
   beforeCreate() {
     this.SIZE = 200;
   },
-  props: ["pomodoro", "shortBreak", "longBreak", "mainTimer"],
-  inject: [""],
+  props: ["pomodoro", "shortBreak", "longBreak", "mainTimer", "pause"],
   data() {
     return {
       h: null,
@@ -46,8 +51,18 @@ export default {
     },
   },
   watch: {
+    pause: function() {
+      console.log(`pause:, ${this.pause}`);
+    },
+    mainTimer: function() {
+      return;
+    },
     pomodoro: function() {
       console.log("pomodoro changed");
+
+      this.animationObject.animationDuration = this.mainTimer;
+      this.aniTime();
+      console.log(this.animationObject.animationDuration);
     },
     shortBreak: function() {
       console.log("shortBreak changed");
@@ -58,7 +73,12 @@ export default {
   },
   mounted() {
     this.aniTime();
-    console.log(this.pomodoro, this.shortBreak, this.longBreak, this.mainTimer);
+    // console.log(
+    //   this.pomodoro,
+    //   this.shortBreak,
+    //   this.longBreak,
+    //   this.animationTime
+    // );
     // console.log(this.animationObject.animationDuration);
   },
 };
@@ -68,11 +88,34 @@ export default {
 .box svg {
   transform: rotate(90deg);
 }
-.box svg circle {
-  animation: animate linear;
+.box svg circle.pomodoroTimer {
+  animation-duration: 5s;
+}
+.box svg circle.shortBreakTimer {
+  animation-duration: 15s;
+}
+.box svg circle.pauseAnimation {
+  animation-play-state: paused !important;
+}
+.box svg circle.animation {
+  animation-play-state: running;
+  animation: animate 5s linear;
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
 }
+.box svg circle.animationShortBreak {
+  animation-play-state: running;
+  animation: animate 15s linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+.box svg circle.animationLongBreak {
+  animation-play-state: running;
+  animation: animate 25s linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+
 @keyframes animate {
   to {
     stroke-dashoffset: 0;
