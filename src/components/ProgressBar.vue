@@ -9,7 +9,7 @@
         <circle
           :cx="SIZE / 2"
           :cy="SIZE / 2"
-          r="70"
+          r="50"
           stroke-linecap="round"
           stroke-dasharray="472"
           stroke-dashoffset="472"
@@ -35,8 +35,8 @@ export default {
   props: ["pomodoro", "shortBreak", "longBreak", "mainTimer", "pause"],
   data() {
     return {
-      h: null,
-      w: null,
+      h: this.SIZE / 2,
+      w: this.SIZE / 2,
       b: this.animationTime,
 
       animationObject: {

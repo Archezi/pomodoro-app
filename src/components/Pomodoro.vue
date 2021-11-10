@@ -47,7 +47,7 @@
     </section>
     <section class="timer mx-w-full grid   content-center justify-center    ">
       <div
-        class="timer-container relative cursor-pointer  content-center justify-center rounded-full w-72 h-72  "
+        class="timer-container relative cursor-pointer  content-center justify-center rounded-full   "
       >
         <div
           class="hover-element  rounded-full w-full h-full z-99 bg-none"
@@ -56,10 +56,9 @@
         <div
           @click="start"
           v-if="!timerRunning"
-          class="circle-1
+          class="start-button
           
           transition duration-500 ease-in-out 
-          w-full h-full
           z-50
           bg-none
           absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
@@ -74,7 +73,7 @@
         <div
           @click="stop"
           v-else
-          class="circle-2 
+          class="stop-button
           w-full h-full
           hover:bg-orange-darker
           transition duration-500 ease-in-out 
@@ -89,7 +88,7 @@
         </div>
         <!--timer -->
         <div
-          class="circle-inner z-50
+          class="timer-display z-50
         absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
           <span class="text-6xl font-bold text-font-default z-55"
@@ -97,7 +96,23 @@
           >
         </div>
         <!-- progres bar -->
-
+        <div class="progress-bar-wrapper">
+          <progress-bar-pomodoro
+            v-if="pomodoro"
+            :pomodoro="this.pomodoro"
+            :pause="this.pause"
+          />
+          <progress-bar-short-break
+            v-if="shortBreak"
+            :short-break="this.shortBreak"
+            :pause="this.pause"
+          />
+          <progress-bar-long-break
+            v-if="longBreak"
+            :long-break="this.longBreak"
+            :pause="this.pause"
+          />
+        </div>
         <button
           @click="reset"
           v-if="timerRunning"
@@ -111,23 +126,20 @@
         </button>
       </div>
     </section>
-    <section class="control">
-      <progress-bar
-        :pomodoro="this.pomodoro"
-        :short-break="this.shortBreak"
-        :long-break="this.longBreak"
-        :main-timer="this.mainTimer"
-        :pause="this.pause"
-        class="mx-auto progressBar   z-0"
-      />
-    </section>
+    <section class="control"></section>
   </div>
 </template>
 
 <script>
-import ProgressBar from "../components/ProgressBar.vue";
+import ProgressBarPomodoro from "./ProgressBarPomodoro.vue";
+import ProgressBarShortBreak from "./ProgressBarShortBreak.vue";
+import ProgressBarLongBreak from "./ProgressBarLongBreak.vue";
 export default {
-  components: { ProgressBar },
+  components: {
+    ProgressBarPomodoro,
+    ProgressBarShortBreak,
+    ProgressBarLongBreak,
+  },
   data() {
     return {
       mainTimer: null,
@@ -139,9 +151,9 @@ export default {
       pause: false,
       pomodoroCount: 1,
       pomodoroTimers: {
-        pomodoro: 1,
-        shortBreak: 2,
-        longBreak: 7,
+        pomodoro: 5,
+        shortBreak: 15,
+        longBreak: 25,
       },
       infoPanelClass: {
         activeClass: "bg-orange-default",
@@ -195,12 +207,7 @@ export default {
       clearInterval(this.timeInterval);
       this.mainTimer = this.pomodoroTimers.pomodoro;
     },
-    // pomodoroCheck() {
-    //   !this.shortBreak && !this.longBreak ? this.pomodoro : !this.pomodoro;
-    // },
-    // shortBreakCheck() {
-    //   !this.pomodoro && !this.longBreak ? this.shortBreak : !this.shortBreak;
-    // },
+
     longBreakCheck() {
       if (this.pomodoroCount === 4) {
         this.longBreak = true;
@@ -253,38 +260,6 @@ export default {
           this.shortBreak = true;
         }
       }
-
-      // if (
-      //   vm.mainTimer === 0 &&
-      //   vm.pomodoro &&
-      //   !vm.shortBreak &&
-      //   !vm.longBreak
-      // ) {
-      //   // set new timer for short break
-      //   vm.mainTimer = vm.pomodoroTimers.shortBreak;
-      //   vm.shortBreak = !vm.shortBreak;
-      //   vm.pomodoro = !vm.pomodoro;
-      //   vm.updatePomodoroCounter();
-      // } else if (
-      //   vm.mainTimer === 0 &&
-      //   vm.shortBreak &&
-      //   !vm.pomodoro &&
-      //   !vm.longBreak
-      // ) {
-      //   vm.mainTimer = vm.pomodoroTimers.pomodoro;
-      //   vm.shortBreak = !vm.shortBreak;
-      //   vm.pomodoro = !vm.pomodoro;
-      // } else if (
-      //   vm.mainTimer === 0 &&
-      //   vm.pomodoro &&
-      //   !vm.shortBreak &&
-      //   vm.longBreakCheck()
-      // ) {
-      //   vm.mainTimer = vm.pomodoroTimers.longBreak;
-      //   vm.pomodoro = true;
-      //   vm.shortBreak = false;
-      //   vm.shortBreak = false;
-      // }
     },
   },
   mounted() {
@@ -302,7 +277,32 @@ export default {
 .active {
   background: orange;
 }
-
+.timer-container {
+  height: 350px;
+  width: 350px;
+  padding: 20px;
+  @media (max-width: 350px) {
+    height: 300px;
+    width: 300px;
+  }
+}
+.hover-element {
+  -webkit-box-shadow: 0px 0px 24px 5px rgba(218, 214, 214, 0.5);
+  box-shadow: 0px 0px 24px 5px rgba(200, 200, 200, 0.5);
+}
+.progress-bar-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+}
+.start-button,
+.stop-button {
+  height: 90%;
+  width: 90%;
+}
 .timer-container:hover .circle-1 {
   background-color: #c45957;
 }
