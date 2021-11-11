@@ -1,5 +1,7 @@
 <template>
-  <div class="wrapper box-border  grid grid-cols-1 h-full justify-center gap-4">
+  <div
+    class="wrapper box-border relative  grid grid-cols-1 h-full justify-center gap-4"
+  >
     <section
       class="title 
       h-full w-full
@@ -50,7 +52,7 @@
         class="timer-container relative cursor-pointer  content-center justify-center rounded-full   "
       >
         <div
-          class="hover-element  rounded-full w-full h-full z-99 bg-none"
+          class="hover-element  rounded-full w-full h-full z-90 bg-none"
         ></div>
         <!--start -->
         <div
@@ -114,8 +116,8 @@
           />
         </div>
         <button
-          @click="reset"
-          v-if="timerRunning"
+          @click="resetButton"
+          v-if="!timerRunning"
           class="reset
           border  rounded-full 
           px-2 py-1
@@ -128,9 +130,19 @@
     </section>
     <section class="control"></section>
   </div>
+  <base-dialog
+    v-if="dialog.dialogShow"
+    :show="dialog.dialogShow"
+    :title="dialog.dialogTitle"
+    :description="dialog.dialogDescription"
+    :close="dialogClose"
+    :reset="dialogReset"
+    class="dialog__window"
+  />
 </template>
 
 <script>
+import BaseDialog from "../components/UI/BaseDialog.vue";
 import ProgressBarPomodoro from "./ProgressBarPomodoro.vue";
 import ProgressBarShortBreak from "./ProgressBarShortBreak.vue";
 import ProgressBarLongBreak from "./ProgressBarLongBreak.vue";
@@ -139,6 +151,7 @@ export default {
     ProgressBarPomodoro,
     ProgressBarShortBreak,
     ProgressBarLongBreak,
+    BaseDialog,
   },
   data() {
     return {
@@ -150,6 +163,11 @@ export default {
       timeInterval: null,
       pause: false,
       pomodoroCount: 1,
+      dialog: {
+        dialogShow: false,
+        dialogTitle: "Pomodoro",
+        dialogDescription: "Are you sure you want to reset Pomodoro timers? ",
+      },
       pomodoroTimers: {
         pomodoro: 5,
         shortBreak: 15,
@@ -202,12 +220,26 @@ export default {
           this.mainTimer -= 1;
         }, 1000);
     },
-    reset() {
+    resetButton() {
+      this.dialog.dialogShow = true;
+      this.timerRunning = false;
+      this.pause = true;
+    },
+    dialogClose() {
+      console.log("close");
+      this.timerRunning = true;
+      this.pause = false;
+      this.dialog.dialogShow = false;
+    },
+    dialogReset() {
       this.timerRunning = false;
       clearInterval(this.timeInterval);
+      this.pomodoro = false;
+      this.shortBreak = false;
+      this.longBreak = false;
       this.mainTimer = this.pomodoroTimers.pomodoro;
+      this.dialog.dialogShow = false;
     },
-
     longBreakCheck() {
       if (this.pomodoroCount === 4) {
         this.longBreak = true;
@@ -236,8 +268,6 @@ export default {
       this.pomodoroCount += 1;
       console.log(this.pomodoroCount);
     },
-
-    timerSwitch() {},
   },
   watch: {
     mainTimer: function() {
@@ -305,5 +335,14 @@ export default {
 }
 .timer-container:hover .circle-1 {
   background-color: #c45957;
+}
+.dialog__window {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
 }
 </style>
