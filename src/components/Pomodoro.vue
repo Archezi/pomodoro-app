@@ -1,6 +1,6 @@
 <template>
   <div
-    class="wrapper box-border relative  grid grid-cols-1 h-full justify-center gap-4"
+    class="wrapper box-border relative grid grid-cols-1 h-full justify-center gap-4"
   >
     <section
       class="title 
@@ -12,85 +12,45 @@
     </section>
 
     <section
-      class="info-panel flex justify-center items-center w-full h-full lg: "
+      class="info-panel
+      w-full h-full
+      flex justify-center items-center"
+    >
+      <display-panel
+        :pomodoro="pomodoro"
+        :short-break="shortBreak"
+        :long-break="longBreak"
+      ></display-panel>
+    </section>
+    <section
+      class="timer
+             mx-w-full 
+             grid content-center justify-center"
     >
       <div
-        class="
-          lg:w-5/12 lg:h-24
-          w-11/12 h-12
-          grid grid-cols-3 gap-1
-          items-center 
-          border rounded-full px-1 py-1
-          "
+        class="timer-container 
+        relative content-center justify-center 
+        cursor-pointer rounded-full"
       >
         <div
-          :class="{ 'bg-orange-default': pomodoro }"
-          class=" border h-full rounded-full flex items-center justify-center "
-        >
-          <span>Pomodoro </span>
-        </div>
-        <div
-          :class="[
-            shortBreak
-              ? infoPanelClass.activeClass
-              : infoPanelClass.defaultClass,
-          ]"
-          class=" border h-full transition duration-75 rounded-full flex items-center justify-center "
-        >
-          <span>Short break</span>
-        </div>
-        <div
-          :class="{ 'bg-orange-default': longBreak }"
-          class=" border h-full rounded-full flex items-center justify-center "
-        >
-          <span>Long brake</span>
-        </div>
-      </div>
-    </section>
-    <section class="timer mx-w-full grid   content-center justify-center    ">
-      <div
-        class="timer-container relative cursor-pointer  content-center justify-center rounded-full   "
-      >
-        <div
-          class="hover-element  rounded-full w-full h-full z-90 bg-none"
+          class="hover-element 
+          w-full h-full 
+          rounded-full
+          z-90 bg-none"
         ></div>
         <!--start -->
-        <div
-          @click="start"
+        <button-start
           v-if="!timerRunning"
-          class="start-button
-          transition duration-500 ease-in-out 
-          z-50
-          bg-none
-          absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-          border-8  border-font-dark rounded-full"
-        >
-          <span
-            class="absolute bottom-12 left-1/2 transform -translate-x-1/2 tracking-extraWide "
-            >START</span
-          >
-        </div>
+          @start-timer="start"
+          :timer-running="timerRunning"
+        />
         <!--stop -->
-        <div
-          @click="stop"
-          v-else
-          class="stop-button
-          w-full h-full
-          hover:bg-orange-darker
-          transition duration-500 ease-in-out 
-          z-50
-          absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-          border-8  border-font-dark rounded-full"
-        >
-          <span
-            class="absolute bottom-12 left-1/2 transform -translate-x-1/2 tracking-extraWide "
-            >STOP</span
-          >
-        </div>
+        <button-stop v-else @stop-timer="stop" :timer-running="timerRunning" />
         <!--timer -->
         <div
-          class="timer-display z-50
-        absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          class="timer-display 
+          absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+          z-50"
         >
           <span class="text-6xl font-bold text-font-default z-55"
             >{{ displayMinutes }}:{{ displaySeconds }}</span
@@ -114,17 +74,7 @@
             :pause="this.pause"
           />
         </div>
-        <button
-          @click="resetButton"
-          v-if="!timerRunning"
-          class="reset
-          border  rounded-full 
-          px-2 py-1
-          absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12
-          hover:border hover:bg-orange"
-        >
-          <span>RESET</span>
-        </button>
+        <button-reset @reset-timers="reset" />
       </div>
     </section>
     <section class="control"></section>
@@ -145,12 +95,20 @@ import BaseDialog from "../components/UI/BaseDialog.vue";
 import ProgressBarPomodoro from "./ProgressBarPomodoro.vue";
 import ProgressBarShortBreak from "./ProgressBarShortBreak.vue";
 import ProgressBarLongBreak from "./ProgressBarLongBreak.vue";
+import DisplayPanel from "./UI/DisplayPanel.vue";
+import ButtonStop from "./UI/ButtonStop.vue";
+import ButtonStart from "./UI/ButtonStart.vue";
+import ButtonReset from "./UI/ButtonReset.vue";
 export default {
   components: {
     ProgressBarPomodoro,
     ProgressBarShortBreak,
     ProgressBarLongBreak,
     BaseDialog,
+    DisplayPanel,
+    ButtonStop,
+    ButtonStart,
+    ButtonReset,
   },
   data() {
     return {
@@ -171,10 +129,6 @@ export default {
         pomodoro: 5,
         shortBreak: 15,
         longBreak: 25,
-      },
-      infoPanelClass: {
-        activeClass: "bg-orange-default",
-        defaultClass: "bg-transparent",
       },
     };
   },
@@ -219,7 +173,7 @@ export default {
           this.mainTimer -= 1;
         }, 1000);
     },
-    resetButton() {
+    reset() {
       this.dialog.dialogShow = true;
       this.timerRunning = false;
       this.pause = true;
@@ -303,9 +257,6 @@ export default {
   grid-template-rows: 10% 10% 70% 10%;
 }
 
-.active {
-  background: orange;
-}
 .timer-container {
   height: 350px;
   width: 350px;

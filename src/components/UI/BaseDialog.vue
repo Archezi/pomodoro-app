@@ -1,6 +1,6 @@
 <template>
   <div v-if="show" class="relative">
-    <div class="overlay    "></div>
+    <div class="overlay"></div>
 
     <div class="dialog bg-main-dark   ">
       <div class="dialog__content flex flex-col content-center py-8">

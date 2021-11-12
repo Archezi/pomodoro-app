@@ -19,7 +19,9 @@ module.exports = {
       },
       button: {
         accept: "#1FB919",
+        acceptDarker: "#0D520B",
         cancel: "#DD511C",
+        cancelDarker: "#DD511C",
       },
     },
     letterSpacing: {
