@@ -15,9 +15,19 @@
       </div>
       <hr />
 
-      <div class="dialog__footer  py-8  flex justify-around items-center">
-        <button @click="close" class="dialog__continue">Continue</button>
-        <button @click="reset" class="dialog__reset">Reset</button>
+      <div class="dialog__footer    flex justify-around items-center">
+        <button
+          @click="close"
+          class="dialog__continue w-1/2 border-r h-full transition-colors duration-500 ease-in-out hover:bg-button-accept "
+        >
+          Continue
+        </button>
+        <button
+          @click="reset"
+          class="dialog__reset w-1/2 h-full hover:bg-button-cancel transition-colors duration-500 ease-in-out"
+        >
+          Reset
+        </button>
       </div>
     </div>
   </div>
@@ -57,5 +67,7 @@ export default {
     width: 80%;
     height: 50%;
   }
+}
+.dialog__continue {
 }
 </style>

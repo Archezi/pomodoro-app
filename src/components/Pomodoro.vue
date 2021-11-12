@@ -59,7 +59,6 @@
           @click="start"
           v-if="!timerRunning"
           class="start-button
-          
           transition duration-500 ease-in-out 
           z-50
           bg-none

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-orange box w-full h-full">
-    <svg :viewBox="`0 0 150 150`" :height="h || '100%'" :width="w || '100%'">
+    <svg :viewBox="`0 0 150 150`" :height="'100%'" :width="'100%'">
       <g stroke="dodgerblue" stroke-width="5" fill="transparent">
         <circle
           :cx="75"
@@ -19,18 +19,9 @@
 
 <script>
 export default {
-  beforeCreate() {
-    this.SIZE = 200;
-  },
-  props: ["pomodoro", "shortBreak", "longBreak", "mainTimer", "pause"],
-  computed: {
-    animationTime() {
-      return parseInt(this.mainTimer + 2);
-    },
-  },
+  props: ["shortBreak", "pause"],
 };
 </script>
-
 <style scoped>
 .box svg {
   transform: rotate(-90deg);

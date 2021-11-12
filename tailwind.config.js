@@ -7,6 +7,7 @@ module.exports = {
         light: "#282C51",
         default: "#1E2140",
         dark: "#151932",
+        darker: "#292929",
       },
       orange: {
         default: "#F8716E",
@@ -15,6 +16,10 @@ module.exports = {
       font: {
         default: "#D7E0FF",
         dark: "#4E526D",
+      },
+      button: {
+        accept: "#1FB919",
+        cancel: "#DD511C",
       },
     },
     letterSpacing: {
