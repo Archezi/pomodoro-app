@@ -50,7 +50,7 @@ export default {
   animation-timing-function: linear;
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
 }
 @keyframes animate {
   to {

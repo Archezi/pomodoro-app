@@ -3,7 +3,12 @@
     <header class="header  ">
       <div class="settings__heading flex align-center  justify-between p-4">
         <h2 class="text-xl">Settings</h2>
-        <span>Close</span>
+        <button
+          class="w-8 h-8  text-gray-600 hover:text-gray-100 text-2xl transition transition-colors tra"
+          @click="closeSettings"
+        >
+          X
+        </button>
       </div>
     </header>
     <section class="settings  ">
@@ -30,7 +35,7 @@
                 name="longbreak"
                 min="1"
                 max="60"
-                :value="`${pomodoro}`"
+                :value="`${customPomodoroTime}`"
               />
 
               <button
@@ -62,7 +67,7 @@
                 name="longbreak"
                 min="1"
                 max="60"
-                :value="`${shortBreak}`"
+                :value="`${customShortBreakTime}`"
               />
 
               <button
@@ -94,7 +99,7 @@
                 name="longbreak"
                 min="1"
                 max="60"
-                :value="`${longBreak}`"
+                :value="`${customLongBreakTime}`"
               />
 
               <button
@@ -123,9 +128,9 @@ export default {
 
   data() {
     return {
-      customPomodoroTime: 25,
-      customShortBreakTime: 5,
-      customLongBreakTime: 30,
+      customPomodoroTime: this.pomodoro,
+      customShortBreakTime: this.shortBreak,
+      customLongBreakTime: this.longBreak,
     };
   },
   methods: {
@@ -147,10 +152,19 @@ export default {
     decreaseLongBreak: function() {
       this.customLongBreakTime--;
     },
-  },
-  computed: {
+    closeSettings() {
+      this.$emit("close-settings");
+    },
     timerSettings() {
-      return console.log(this.customPomodoroTime);
+      let customPomodoro = this.customPomodoroTime;
+      let customShortBreak = this.customShortBreakTime;
+      let customLongBreak = this.customLongBreakTime;
+      this.$emit(
+        "custom-timers",
+        customPomodoro,
+        customShortBreak,
+        customLongBreak
+      );
     },
   },
 };

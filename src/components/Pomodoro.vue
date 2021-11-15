@@ -80,12 +80,22 @@
         <button-reset @reset-timers="reset" />
       </div>
     </section>
-    <section class="control"></section>
+    <section class="control flex justify-center items-center ">
+      <div
+        @click="dialogSettings"
+        class="w-16 h-10 flex justify-center cursor-pointer "
+      >
+        <img src="../assets/UI/settings.svg" alt="" />
+      </div>
+    </section>
   </div>
   <dialog-settings
+    v-if="dialog.settings"
     :pomodoro="pomodoroTimers.pomodoro"
     :short-break="pomodoroTimers.shortBreak"
     :long-break="pomodoroTimers.longBreak"
+    @custom-timers="setCustomTimers"
+    @close-settings="dialogSettings"
     class="dialog__settings"
   />
   <dialog-confirmation
@@ -133,6 +143,7 @@ export default {
       pomodoroCount: 1,
       dialog: {
         dialogShow: false,
+        settings: false,
         dialogTitle: "Pomodoro",
         dialogDescription: "Are you sure you want to reset Pomodoro timers? ",
       },
@@ -143,11 +154,7 @@ export default {
       },
     };
   },
-  provide() {
-    return {
-      mainTimer: this.mainTimer,
-    };
-  },
+
   computed: {
     displayMinutes() {
       const minutes = Math.floor(this.mainTimer / 60);
@@ -204,6 +211,9 @@ export default {
       this.mainTimer = this.pomodoroTimers.pomodoro;
       this.dialog.dialogShow = false;
     },
+    dialogSettings() {
+      this.dialog.settings = !this.dialog.settings;
+    },
     longBreakCheck() {
       if (this.pomodoroCount === 4) {
         this.longBreak = true;
@@ -231,6 +241,13 @@ export default {
     updatePomodoroCounter() {
       this.pomodoroCount += 1;
       console.log(this.pomodoroCount);
+    },
+    setCustomTimers(customPomodoro, customShortBreak, customLongBreak) {
+      this.pomodoroTimers.shortBreak = customShortBreak;
+      this.pomodoroTimers.longBreak = customLongBreak;
+      this.pomodoroTimers.pomodoro = customPomodoro;
+      this.mainTimer = customPomodoro;
+      this.dialogSettings();
     },
   },
   watch: {
@@ -267,7 +284,7 @@ export default {
 
 <style scoped>
 .wrapper {
-  grid-template-rows: 10% 10% 70% 10%;
+  grid-template-rows: 10% 10% 60% 10%;
 }
 
 .timer-container {
