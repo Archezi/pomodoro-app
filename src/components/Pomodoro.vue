@@ -60,18 +60,21 @@
         <div class="progress-bar-wrapper">
           <progress-bar-pomodoro
             v-if="pomodoro"
-            :pomodoro="this.pomodoro"
-            :pause="this.pause"
+            :pomodoro="pomodoro"
+            :pause="pause"
+            :main-timer="mainTimer"
           />
           <progress-bar-short-break
             v-if="shortBreak"
-            :short-break="this.shortBreak"
-            :pause="this.pause"
+            :short-break="shortBreak"
+            :pause="pause"
+            :main-timer="mainTimer"
           />
           <progress-bar-long-break
             v-if="longBreak"
-            :long-break="this.longBreak"
-            :pause="this.pause"
+            :long-break="longBreak"
+            :pause="pause"
+            :main-timer="mainTimer"
           />
         </div>
         <button-reset @reset-timers="reset" />
@@ -79,19 +82,26 @@
     </section>
     <section class="control"></section>
   </div>
-  <base-dialog
+  <dialog-settings
+    :pomodoro="pomodoroTimers.pomodoro"
+    :short-break="pomodoroTimers.shortBreak"
+    :long-break="pomodoroTimers.longBreak"
+    class="dialog__settings"
+  />
+  <dialog-confirmation
     v-if="dialog.dialogShow"
     :show="dialog.dialogShow"
     :title="dialog.dialogTitle"
     :description="dialog.dialogDescription"
     :close="dialogClose"
     :reset="dialogReset"
-    class="dialog__window"
+    class="dialog__confiramtion"
   />
 </template>
 
 <script>
-import BaseDialog from "../components/UI/BaseDialog.vue";
+import DialogSettings from "./UI/DialogSettings.vue";
+import DialogConfirmation from "./UI/DialogConfirmation.vue";
 import ProgressBarPomodoro from "./ProgressBarPomodoro.vue";
 import ProgressBarShortBreak from "./ProgressBarShortBreak.vue";
 import ProgressBarLongBreak from "./ProgressBarLongBreak.vue";
@@ -104,20 +114,21 @@ export default {
     ProgressBarPomodoro,
     ProgressBarShortBreak,
     ProgressBarLongBreak,
-    BaseDialog,
     DisplayPanel,
     ButtonStop,
     ButtonStart,
     ButtonReset,
+    DialogConfirmation,
+    DialogSettings,
   },
   data() {
     return {
       mainTimer: null,
       timerRunning: false,
+      timeInterval: null,
       pomodoro: null,
       shortBreak: false,
       longBreak: false,
-      timeInterval: null,
       pause: false,
       pomodoroCount: 1,
       dialog: {
@@ -245,8 +256,10 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
     this.mainTimer = this.pomodoroTimers.pomodoro;
+  },
+  mounted() {
     console.log(`Pomodoro App is Running`);
   },
 };
@@ -286,10 +299,21 @@ export default {
 .timer-container:hover .circle-1 {
   background-color: #c45957;
 }
-.dialog__window {
+.dialog__confiramtion {
   position: absolute;
   width: 100%;
   height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+}
+.dialog__settings {
+  position: absolute;
+  width: 90%;
+  height: 50%;
+  max-width: 40rem;
+  max-height: 20rem;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

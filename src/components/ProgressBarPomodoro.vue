@@ -9,6 +9,7 @@
           stroke-linecap="round"
           stroke-dasharray="472"
           stroke-dashoffset="472"
+          :style="{ animationDuration: animationDuration }"
           :class="[{ animation: pomodoro }, { pauseAnimation: pause }]"
         />
         <path />
@@ -19,7 +20,21 @@
 
 <script>
 export default {
-  props: ["pomodoro", "pause"],
+  props: ["pomodoro", "pause", "mainTimer"],
+  data() {
+    return {
+      animationDuration: null,
+    };
+  },
+
+  methods: {
+    setAnimationTime() {
+      this.animationDuration = `${this.mainTimer}s`;
+    },
+  },
+  mounted() {
+    this.setAnimationTime();
+  },
 };
 </script>
 <style scoped>
@@ -37,7 +52,7 @@ export default {
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
   animation-delay: 0.5s;
-  animation-duration: 5s;
+  /* animation-duration: 5s; */
 }
 @keyframes animate {
   to {

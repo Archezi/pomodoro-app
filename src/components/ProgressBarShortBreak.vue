@@ -9,6 +9,7 @@
           stroke-linecap="round"
           stroke-dasharray="472"
           stroke-dashoffset="472"
+          :style="{ animationDuration: animationDuration }"
           :class="[{ animation: shortBreak }, { pauseAnimation: pause }]"
         />
         <path />
@@ -19,7 +20,20 @@
 
 <script>
 export default {
-  props: ["shortBreak", "pause"],
+  props: ["shortBreak", "pause", "mainTimer"],
+  data() {
+    return {
+      animationDuration: null,
+    };
+  },
+  methods: {
+    setAnimationTime() {
+      this.animationDuration = `${this.mainTimer}s`;
+    },
+  },
+  created() {
+    this.setAnimationTime();
+  },
 };
 </script>
 <style scoped>
@@ -36,7 +50,7 @@ export default {
   animation-timing-function: linear;
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
-  animation-duration: 15s;
+  animation-delay: 1s;
 }
 @keyframes animate {
   to {
