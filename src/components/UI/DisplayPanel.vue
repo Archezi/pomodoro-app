@@ -32,12 +32,12 @@
 </template>
 <script>
 export default {
-  props: ["pomodoro", "shortBreak", "longBreak"],
+  props: ['pomodoro', 'shortBreak', 'longBreak'],
   data() {
     return {
       infoPanelClass: {
-        activeClass: "bg-orange-default",
-        defaultClass: "bg-transparent",
+        activeClass: 'bg-orange-default',
+        defaultClass: 'bg-transparent',
       },
     };
   },

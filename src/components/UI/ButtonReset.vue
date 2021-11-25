@@ -13,10 +13,10 @@
 </template>
 <script>
 export default {
-  props: ["timerRunning"],
+  props: ['timerRunning'],
   methods: {
     resetTimers() {
-      this.$emit("reset-timers");
+      this.$emit('reset-timers');
     },
   },
 };

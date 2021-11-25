@@ -1,7 +1,7 @@
 <template>
   <div class="bg-orange box w-full h-full">
     <svg :viewBox="`0 0 150 150`" :height="'100%'" :width="'100%'">
-      <g stroke="dodgerblue" stroke-width="5" fill="transparent">
+      <g stroke="#F8716E" stroke-width="5" fill="transparent">
         <circle
           :cx="75"
           :cy="75"
@@ -20,16 +20,16 @@
 
 <script>
 export default {
-  props: ["longBreak", "pause", "mainTimer"],
+  props: ['longBreak', 'pause', 'mainTimer'],
   methods: {
     setAnimationTime() {
-      this.animationDuration = `${this.mainTimer}s`;
-    },
+      this.animationDuration = `${this.mainTimer}s`
+    }
   },
   mounted() {
-    this.setAnimationTime();
-  },
-};
+    this.setAnimationTime()
+  }
+}
 </script>
 
 <style scoped>

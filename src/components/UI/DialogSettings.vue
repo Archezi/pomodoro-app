@@ -5,7 +5,7 @@
         <h2 class="text-xl">Settings</h2>
         <button
           class="w-8 h-8  text-gray-600 hover:text-gray-100 text-2xl transition transition-colors tra"
-          @click="closeSettings"
+          @click="closeSettingsModal"
         >
           X
         </button>
@@ -24,7 +24,7 @@
             >
               <button
                 @click="decreasePomodoro"
-                class=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full  rounded-l cursor-pointer outline-none"
+                class=" bg-gray-300 text-gray-600 cdhover:text-gray-700 hover:bg-gray-400 h-full  rounded-l cursor-pointer outline-none"
               >
                 <span class="m-auto text-2xl font-thin">−</span>
               </button>
@@ -116,7 +116,7 @@
     </section>
 
     <footer class="footer absolute bottom-0 left-0 w-full p-4 ">
-      <button @click="timerSettings" class="border rounded px-8 py-2">
+      <button @click="applyCustomTimers" class="border rounded px-8 py-2">
         Apply
       </button>
     </footer>
@@ -124,54 +124,65 @@
 </template>
 <script>
 export default {
-  props: ["pomodoro", "shortBreak", "longBreak"],
+  props: ['pomodoro', 'shortBreak', 'longBreak'],
 
   data() {
     return {
-      customPomodoroTime: this.pomodoro,
-      customShortBreakTime: this.shortBreak,
-      customLongBreakTime: this.longBreak,
-    };
+      customPomodoroTime: this.displayMinutes(this.pomodoro),
+      customShortBreakTime: this.displayMinutes(this.shortBreak),
+      customLongBreakTime: this.displayMinutes(this.longBreak)
+    }
   },
+  computed: {},
   methods: {
+    formatTime(time) {
+      if (time < 10) {
+        return '0' + time
+      }
+      return time.toString()
+    },
+    displayMinutes(customTime) {
+      const minutes = Math.floor(customTime / 60)
+      return this.formatTime(minutes)
+    },
     increasePomodoro: function() {
-      this.customPomodoroTime++;
+      this.customPomodoroTime++
     },
     decreasePomodoro: function() {
-      this.customPomodoroTime--;
+      this.customPomodoroTime--
     },
     increaseShortBreak: function() {
-      this.customShortBreakTime++;
+      this.customShortBreakTime++
     },
     decreaseShortBreak: function() {
-      this.customShortBreakTime--;
+      this.customShortBreakTime--
     },
     increaseLongBreak: function() {
-      this.customLongBreakTime++;
+      this.customLongBreakTime++
     },
     decreaseLongBreak: function() {
-      this.customLongBreakTime--;
+      this.customLongBreakTime--
     },
-    closeSettings() {
-      this.$emit("close-settings");
+    closeSettingsModal() {
+      this.$emit('close-settings')
     },
-    timerSettings() {
-      let customPomodoro = this.customPomodoroTime;
-      let customShortBreak = this.customShortBreakTime;
-      let customLongBreak = this.customLongBreakTime;
+    applyCustomTimers() {
+      let customPomodoro = this.customPomodoroTime
+      let customShortBreak = this.customShortBreakTime
+      let customLongBreak = this.customLongBreakTime
       this.$emit(
-        "custom-timers",
+        'custom-timers',
         customPomodoro,
         customShortBreak,
         customLongBreak
-      );
-    },
-  },
-};
+      )
+    }
+  }
+}
 </script>
 <style scoped>
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

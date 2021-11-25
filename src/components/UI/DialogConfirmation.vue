@@ -34,7 +34,7 @@
 </template>
 <script>
 export default {
-  props: ["show", "title", "description", "close", "reset"],
+  props: ['show', 'title', 'description', 'close', 'reset'],
 };
 </script>
 <style scoped>

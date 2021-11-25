@@ -77,7 +77,7 @@
             :main-timer="mainTimer"
           />
         </div>
-        <button-reset @reset-timers="reset" />
+        <button-reset @reset-timers="resetButton" />
       </div>
     </section>
     <section class="control flex justify-center items-center ">
@@ -104,21 +104,21 @@
     :title="dialog.dialogTitle"
     :description="dialog.dialogDescription"
     :close="dialogClose"
-    :reset="dialogReset"
+    :reset="resetTimers"
     class="dialog__confiramtion"
   />
 </template>
 
 <script>
-import DialogSettings from "./UI/DialogSettings.vue";
-import DialogConfirmation from "./UI/DialogConfirmation.vue";
-import ProgressBarPomodoro from "./ProgressBarPomodoro.vue";
-import ProgressBarShortBreak from "./ProgressBarShortBreak.vue";
-import ProgressBarLongBreak from "./ProgressBarLongBreak.vue";
-import DisplayPanel from "./UI/DisplayPanel.vue";
-import ButtonStop from "./UI/ButtonStop.vue";
-import ButtonStart from "./UI/ButtonStart.vue";
-import ButtonReset from "./UI/ButtonReset.vue";
+import DialogSettings from './UI/DialogSettings.vue'
+import DialogConfirmation from './UI/DialogConfirmation.vue'
+import ProgressBarPomodoro from './ProgressBarPomodoro.vue'
+import ProgressBarShortBreak from './ProgressBarShortBreak.vue'
+import ProgressBarLongBreak from './ProgressBarLongBreak.vue'
+import DisplayPanel from './UI/DisplayPanel.vue'
+import ButtonStop from './UI/ButtonStop.vue'
+import ButtonStart from './UI/ButtonStart.vue'
+import ButtonReset from './UI/ButtonReset.vue'
 export default {
   components: {
     ProgressBarPomodoro,
@@ -129,7 +129,7 @@ export default {
     ButtonStart,
     ButtonReset,
     DialogConfirmation,
-    DialogSettings,
+    DialogSettings
   },
   data() {
     return {
@@ -144,142 +144,148 @@ export default {
       dialog: {
         dialogShow: false,
         settings: false,
-        dialogTitle: "Pomodoro",
-        dialogDescription: "Are you sure you want to reset Pomodoro timers? ",
+        dialogTitle: 'Pomodoro',
+        dialogDescription: 'Are you sure you want to reset Pomodoro timers? '
       },
       pomodoroTimers: {
-        pomodoro: 5,
-        shortBreak: 15,
-        longBreak: 25,
-      },
-    };
+        pomodoro: null,
+        shortBreak: null,
+        longBreak: null
+      }
+    }
   },
 
   computed: {
     displayMinutes() {
-      const minutes = Math.floor(this.mainTimer / 60);
-      return this.formatTime(minutes);
+      const minutes = Math.floor(this.mainTimer / 60)
+      return this.formatTime(minutes)
     },
     displaySeconds() {
-      const seconds = this.mainTimer % 60;
-      return this.formatTime(seconds);
-    },
+      const seconds = this.mainTimer % 60
+      return this.formatTime(seconds)
+    }
   },
   methods: {
     formatTime(time) {
       if (time < 10) {
-        return "0" + time;
+        return '0' + time
       }
-      return time.toString();
+      return time.toString()
     },
     stop() {
-      this.pause = true;
-      this.timerRunning = !this.timerRunning;
-      clearInterval(this.timeInterval);
+      this.pause = true
+      this.timerRunning = !this.timerRunning
+      clearInterval(this.timeInterval)
     },
     start() {
-      this.pause = false;
+      this.pause = false
       if (this.shortBreak || this.longBreak) {
-        this.pomodoro = false;
+        this.pomodoro = false
       } else {
-        this.pomodoro = true;
+        this.pomodoro = true
       }
-      this.timerRunning = !this.taimerRunning;
+      this.timerRunning = !this.taimerRunning
 
       if (this.timerRunning)
         this.timeInterval = setInterval(() => {
-          this.mainTimer -= 1;
-        }, 1000);
+          this.mainTimer -= 1
+        }, 1000)
     },
-    reset() {
-      this.dialog.dialogShow = true;
-      this.timerRunning = false;
-      this.pause = true;
+    resetButton() {
+      this.dialog.dialogShow = true
+      this.timerRunning = false
+      this.pause = true
     },
     dialogClose() {
-      console.log("close");
-      this.timerRunning = true;
-      this.pause = false;
-      this.dialog.dialogShow = false;
+      console.log('close')
+      this.timerRunning = true
+      this.pause = false
+      this.dialog.dialogShow = false
     },
-    dialogReset() {
-      this.timerRunning = false;
-      clearInterval(this.timeInterval);
-      this.pomodoro = false;
-      this.shortBreak = false;
-      this.longBreak = false;
-      this.mainTimer = this.pomodoroTimers.pomodoro;
-      this.dialog.dialogShow = false;
+    resetTimers() {
+      this.timerRunning = false
+      clearInterval(this.timeInterval)
+      this.pomodoro = false
+      this.shortBreak = false
+      this.longBreak = false
+      this.defaultTimers()
+      this.mainTimer = this.pomodoroTimers.pomodoro
+      this.dialog.dialogShow = false
     },
     dialogSettings() {
-      this.dialog.settings = !this.dialog.settings;
+      this.dialog.settings = !this.dialog.settings
     },
     longBreakCheck() {
       if (this.pomodoroCount === 4) {
-        this.longBreak = true;
-        this.shortBreak = false;
+        this.longBreak = true
+        this.shortBreak = false
       } else {
-        this.longBreak = false;
+        this.longBreak = false
       }
+    },
+    defaultTimers() {
+      const min = 60
+      this.pomodoroTimers.pomodoro = 25 * min
+      this.pomodoroTimers.shortBreak = 5 * min
+      this.pomodoroTimers.longBreak = 30 * min
     },
     updateTimer() {
       if (this.pomodoro) {
         if (this.pomodoroCount === 4) {
-          this.mainTimer = this.pomodoroTimers.longBreak;
+          this.mainTimer = this.pomodoroTimers.longBreak
         } else {
-          this.mainTimer = this.pomodoroTimers.shortBreak;
+          this.mainTimer = this.pomodoroTimers.shortBreak
         }
-        this.pomodoro = !this.pomodoro;
+        this.pomodoro = !this.pomodoro
       } else if (this.shortBreak) {
-        this.mainTimer = this.pomodoroTimers.pomodoro;
-        this.shortBreak = !this.shortBreak;
+        this.mainTimer = this.pomodoroTimers.pomodoro
+        this.shortBreak = !this.shortBreak
       } else if (this.longBreak) {
-        this.mainTimer = this.pomodoroTimers.pomodoro;
-        this.longBreak = !this.longBreak;
+        this.mainTimer = this.pomodoroTimers.pomodoro
+        this.longBreak = !this.longBreak
       }
     },
     updatePomodoroCounter() {
-      this.pomodoroCount += 1;
-      console.log(this.pomodoroCount);
+      this.pomodoroCount += 1
+      console.log(this.pomodoroCount)
     },
     setCustomTimers(customPomodoro, customShortBreak, customLongBreak) {
-      this.pomodoroTimers.shortBreak = customShortBreak;
-      this.pomodoroTimers.longBreak = customLongBreak;
-      this.pomodoroTimers.pomodoro = customPomodoro;
-      this.mainTimer = customPomodoro;
-      this.dialogSettings();
-    },
+      this.pomodoroTimers.shortBreak = customShortBreak * 60
+      this.pomodoroTimers.longBreak = customLongBreak * 60
+      this.pomodoroTimers.pomodoro = customPomodoro * 60
+      this.mainTimer = customPomodoro * 60
+      this.dialogSettings()
+    }
   },
   watch: {
     mainTimer: function() {
-      let vm = this;
-
-      if (vm.mainTimer === 0 && this.longBreak === true) {
-        vm.updateTimer();
-        this.pomodoro = !this.pomodoro;
-        this.pomodoroCount = 1;
-      } else if (vm.mainTimer === 0 && this.shortBreak === true) {
-        vm.updateTimer();
-        vm.updatePomodoroCounter();
-        this.pomodoro = !this.pomodoro;
-      } else if (vm.mainTimer === 0 && this.pomodoro === true) {
+      if (this.mainTimer === 0 && this.longBreak === true) {
+        this.updateTimer()
+        this.pomodoro = !this.pomodoro
+        this.pomodoroCount = 1
+      } else if (this.mainTimer === 0 && this.shortBreak === true) {
+        this.updateTimer()
+        this.updatePomodoroCounter()
+        this.pomodoro = !this.pomodoro
+      } else if (this.mainTimer === 0 && this.pomodoro === true) {
         if (this.pomodoroCount === 4) {
-          vm.updateTimer();
-          this.longBreak = !this.longBreak;
+          this.updateTimer()
+          this.longBreak = !this.longBreak
         } else {
-          vm.updateTimer();
-          this.shortBreak = true;
+          this.updateTimer()
+          this.shortBreak = true
         }
       }
-    },
+    }
   },
   created() {
-    this.mainTimer = this.pomodoroTimers.pomodoro;
+    this.defaultTimers()
+    this.mainTimer = this.pomodoroTimers.pomodoro
   },
   mounted() {
-    console.log(`Pomodoro App is Running`);
-  },
-};
+    console.log(`Pomodoro App is Running`)
+  }
+}
 </script>
 
 <style scoped>
@@ -288,17 +294,21 @@ export default {
 }
 
 .timer-container {
-  height: 350px;
-  width: 350px;
+  height: 400px;
+  width: 400px;
   padding: 20px;
+  -webkit-box-shadow: 11px 17px 19px 5px rgba(0, 0, 0, 0.2),
+    -5px -5px 19px 5px rgba(255, 255, 255, 0.2);
+  box-shadow: 11px 17px 19px 5px rgba(0, 0, 0, 0.2),
+    -5px -5px 19px 5px rgba(255, 255, 255, 0.2);
   @media (max-width: 350px) {
     height: 300px;
     width: 300px;
   }
 }
 .hover-element {
-  -webkit-box-shadow: 0px 0px 24px 5px rgba(218, 214, 214, 0.5);
-  box-shadow: 0px 0px 24px 5px rgba(200, 200, 200, 0.5);
+  /* -webkit-box-shadow: 0px 0px 24px 5px rgba(218, 214, 214, 0.5);
+  box-shadow: 0px 0px 24px 5px rgba(200, 200, 200, 0.5); */
 }
 .progress-bar-wrapper {
   position: absolute;
@@ -310,12 +320,11 @@ export default {
 }
 .start-button,
 .stop-button {
-  height: 90%;
-  width: 90%;
+  height: 85%;
+  width: 85%;
+  background-color: #151932;
 }
-.timer-container:hover .circle-1 {
-  background-color: #c45957;
-}
+
 .dialog__confiramtion {
   position: absolute;
   width: 100%;
