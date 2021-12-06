@@ -292,24 +292,22 @@ export default {
 .wrapper {
   grid-template-rows: 10% 10% 60% 10%;
 }
-
+@media (max-width: 350px) {
+  .timer-container {
+    height: 300px;
+    width: 300px;
+  }
+}
 .timer-container {
-  height: 400px;
-  width: 400px;
+  height: 350px;
+  width: 350px;
   padding: 20px;
   -webkit-box-shadow: 11px 17px 19px 5px rgba(0, 0, 0, 0.2),
     -5px -5px 19px 5px rgba(255, 255, 255, 0.2);
   box-shadow: 11px 17px 19px 5px rgba(0, 0, 0, 0.2),
     -5px -5px 19px 5px rgba(255, 255, 255, 0.2);
-  @media (max-width: 350px) {
-    height: 300px;
-    width: 300px;
-  }
 }
-.hover-element {
-  /* -webkit-box-shadow: 0px 0px 24px 5px rgba(218, 214, 214, 0.5);
-  box-shadow: 0px 0px 24px 5px rgba(200, 200, 200, 0.5); */
-}
+
 .progress-bar-wrapper {
   position: absolute;
   top: 50%;

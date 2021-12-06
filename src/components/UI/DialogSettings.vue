@@ -186,13 +186,4 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.header {
-  /* height: 15%; */
-}
-.settings {
-  /* height: 70%; */
-}
-.footer {
-  /* height: 15%; */
-}
 </style>
